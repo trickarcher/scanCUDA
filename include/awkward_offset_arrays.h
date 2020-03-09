@@ -2,6 +2,8 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <memory>
+#include <random>
+
 #pragma once
 
 static void HandleError(cudaError_t err,
@@ -56,6 +58,8 @@ class AwkwardOffsetArrayCuda {
   void compute_offsets_kernel_wrapper();
 
   void compact_offsets_kernel_wrapper();
+
+  bool check_correctness(int64_t length, int64_t startoffset, int64_t stopoffset);
 
 };
 }

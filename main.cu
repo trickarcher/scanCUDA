@@ -3,7 +3,7 @@
 #include "include/awkward_offset_arrays.h"
 int main() {
   int64_t length;
-  for(int i = 0; i < 9; i++) {
+  for(int i = 0; i < 4; i++) {
     length =  pow(10, i);
     int64_t *tooffsets = new int64_t[length + 1];
     int32_t *fromstarts = new int32_t[length];

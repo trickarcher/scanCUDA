@@ -1,6 +1,7 @@
 #include "awkward_offset_arrays.h"
 #include <iostream>
 #include <cmath>
+#include <limits>
 
 namespace awkward {
 
@@ -23,7 +24,6 @@ void AwkwardOffsetArrayCuda<T, C>::awkward_listarray_compact_offsets(T **tooffse
   this->stopoffset = stopsoffset;
   this->length = length;
   this->tooffsets = new T[length + 1];
-  std::cout << "Assigned" << std::endl;
   SIZE_C = sizeof(C) * length;
   SIZE_T = sizeof(T) * (length + 1);
 
@@ -54,18 +54,64 @@ void AwkwardOffsetArrayCuda<T, C>::awkward_listarray_compact_offsets(T **tooffse
   (*tooffsets) = this->tooffsets;
 }
 
+template<typename T, typename C>
+bool AwkwardOffsetArrayCuda<T, C>::check_correctness(int64_t length, int64_t startoffset, int64_t stopoffset) {
+
+  T *tooffsets = new T[length + 1];
+  C *fromstarts = new C[length];
+  C *fromstops = new C[length];
+
+  srand(time(0));
+
+  C max_limit = std::numeric_limits<C>::max();
+  for (int64_t i = 0; i < length; i++) {
+    C val_1 = rand() % max_limit;
+    C val_2 = rand() % max_limit;
+    fromstarts[i] = (val_1 <= val_2) ? val_1 : val_2;
+    fromstops[i] = (val_1 >= val_2) ? val_1 : val_2;
+  }
+
+  awkward::AwkwardOffsetArrayCuda<T, C> arr;
+  arr.awkward_listarray_compact_offsets(&tooffsets, fromstarts, fromstops, startoffset, stopoffset, length);
+
+  int *cpu_tooffsets = new int[length + 1];
+  cpu_tooffsets[0] = 0;
+  for (int i = 0; i < length; i++) {
+    C stop, start;
+    if(stopoffset + i < length  && startoffset + i < length) {
+      stop = fromstops[stopoffset + i];
+      start = fromstarts[startoffset + i];
+    }
+    else {
+      stop = 0;
+      start = 0;
+    }
+    if(stop < start)
+      return false;
+
+    cpu_tooffsets[i + 1] = cpu_tooffsets[i] + (stop - start);
+  }
+  bool flag = true;
+  for (int i = 0; i <= length; i++) {
+    if (cpu_tooffsets[i] != tooffsets[i]) {
+      flag = false;
+    }
+  }
+
+  delete(tooffsets);
+  delete(fromstarts);
+  delete(fromstops);
+  return flag;
+}
+
+
 template
 class AwkwardOffsetArrayCuda<int64_t, int32_t>;
 
 template
-class AwkwardOffsetArrayCuda<int16_t, int8_t>;
-
-template
-class AwkwardOffsetArrayCuda<int32_t, int16_t>;
-
-template
-class AwkwardOffsetArrayCuda<int, int>;
-
-template
 class AwkwardOffsetArrayCuda<int64_t, int8_t>;
+
+template
+class AwkwardOffsetArrayCuda<int64_t, int16_t>;
+
 }

@@ -55,11 +55,14 @@ __global__ void awkward_listarray_compute_offsets_cuda(T *d_tooffsets,
   auto thread_id = block_id * blockDim.x + threadIdx.x;
 
   if (thread_id < length) {
-    if (d_fromstops[thread_id + stopoffset] > d_fromstarts[thread_id + startoffset])
-      d_tooffsets[thread_id + 1] = d_fromstops[thread_id + stopoffset] - d_fromstarts[thread_id + startoffset];
-    else {
-      assert("Invalid!");
-//      ~AwkwardOffsetArrayCuda();
+    if(thread_id + stopoffset < length && thread_id + startoffset < length) {
+      if (d_fromstops[thread_id + stopoffset] > d_fromstarts[thread_id + startoffset])
+        d_tooffsets[thread_id + 1] = d_fromstops[thread_id + stopoffset] - d_fromstarts[thread_id + startoffset];
+      else {
+        assert("Invalid!");
+      }
+    } else {
+      d_tooffsets[thread_id + 1] = 0;
     }
   }
 }
@@ -104,14 +107,8 @@ template
 class AwkwardOffsetArrayCuda<int64_t, int32_t>;
 
 template
-class AwkwardOffsetArrayCuda<int16_t, int8_t>;
-
-template
-class AwkwardOffsetArrayCuda<int32_t, int16_t>;
-
-template
-class AwkwardOffsetArrayCuda<int, int>;
-
-template
 class AwkwardOffsetArrayCuda<int64_t, int8_t>;
+
+template
+class AwkwardOffsetArrayCuda<int64_t, int16_t>;
 }
