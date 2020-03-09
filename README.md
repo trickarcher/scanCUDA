@@ -53,8 +53,8 @@ This allows us to skip the entire `__syncthreads()` stuff which leads to consist
 ---
 
 As evident, there's almost the GPU implementation is almost 3X faster than CPU at larger array sizes
-
 ---
+
 ## Build Instructions
 
 ### Linux
@@ -63,5 +63,9 @@ As evident, there's almost the GPU implementation is almost 3X faster than CPU a
 * `mkdir build && cd build`
 * `cmake ..`
 * `make`
-* The example executable will be installed in the `build/bin` folder 
-* The tests executable will also be installed in the `build/bin` folder
+* The example executable will be installed in the `build` folder 
+* The tests executable will also be installed in the `build` folder
+
+----
+## Note
+* The 1 test failing for offsets is intentional, I couldn't figure out a good `exit` strategy of what should be done if (stops < starts)

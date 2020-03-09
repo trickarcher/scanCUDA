@@ -30,7 +30,4 @@ add_executable(tests tests/tests.cpp tests/scan_test.cpp)
 target_link_libraries(tests gtest gtest_main awkward_array_scan)
 add_test(tests tests)
 
-install(TARGETS scan tests
-        RUNTIME DESTINATION bin
-        )
 
