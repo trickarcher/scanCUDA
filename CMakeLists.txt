@@ -9,7 +9,7 @@ add_library(awkward_array_scan
 
 target_compile_features(awkward_array_scan PUBLIC cxx_std_11)
 
-add_executable(scan main.cu)
+add_executable(scan example.cpp)
 
 set_target_properties(scan PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(scan PRIVATE awkward_array_scan)

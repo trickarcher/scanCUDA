@@ -3,6 +3,21 @@
 #include "assert.h"
 namespace awkward {
 
+/**
+ * @brief This Cuda Kernel computes the parallel prefix sum using the double buffered version of the Hillis Steele Scan.
+ * Ref: https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda
+ *      https://www.beechwood.eu/cuda-inclusive-scan-hillis-steele/
+ * @tparam T
+ * @tparam C
+ * @param d_in
+ * @param d_out
+ * @param d_tooffsets
+ * @param curr_step
+ * @param total_steps
+ * @param stride
+ * @param length
+ * @param in_out_flag
+ */
 template<typename T, typename C>
 __global__ void awkward_listarray_compact_offsets_cuda(T *d_in,
                                                        T *d_out,
@@ -43,6 +58,22 @@ __global__ void awkward_listarray_compact_offsets_cuda(T *d_in,
   }
 }
 
+/**
+ * @brief The idea behind keeping a seperate kernel for computing the offsets was to prevent the use of
+ * continues transfer to shared memory and keeping a tracking of individual block sums.
+ * Also, this method is a general take on how we can convert the CPU Kernels to GPU Kernels in the most
+ * general form possible.
+ * @tparam T
+ * @tparam C
+ * @param d_in
+ * @param d_out
+ * @param d_tooffsets
+ * @param curr_step
+ * @param total_steps
+ * @param stride
+ * @param length
+ * @param in_out_flag
+ */
 template<typename T, typename C>
 __global__ void awkward_listarray_compute_offsets_cuda(T *d_tooffsets,
                                                        C *d_fromstarts,
@@ -55,7 +86,7 @@ __global__ void awkward_listarray_compute_offsets_cuda(T *d_tooffsets,
   auto thread_id = block_id * blockDim.x + threadIdx.x;
 
   if (thread_id < length) {
-    if(thread_id + stopoffset < length && thread_id + startoffset < length) {
+    if (thread_id + stopoffset < length && thread_id + startoffset < length) {
       if (d_fromstops[thread_id + stopoffset] > d_fromstarts[thread_id + startoffset])
         d_tooffsets[thread_id + 1] = d_fromstops[thread_id + stopoffset] - d_fromstarts[thread_id + startoffset];
       else {

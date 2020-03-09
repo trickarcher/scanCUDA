@@ -36,8 +36,11 @@ void AwkwardOffsetArrayCuda<T, C>::awkward_listarray_compact_offsets(T **tooffse
   HANDLE_ERROR(cudaMalloc((void **) &d_tooffsets, SIZE_T));
 
   if (length > 1024) {
-    blocks_per_grid = dim3(ceil(((float) length) / 1024.0), 1, 1); // length / 1024 is (N/B)
-    threads_per_block = dim3(1024, 1, 1);                             // 512 is B/2
+    // A Ceil function enables us to have the scan in power of 2 while keeping overhead to a minimum
+    // A better approach would be to call the scan for length / 1024 blocks and then compute the rest via CPU
+    // which is guaranteed to be faster for remainder_length < 1024
+    blocks_per_grid = dim3(ceil(((float) length) / 1024.0), 1, 1);
+    threads_per_block = dim3(1024, 1, 1);
   } else {
     blocks_per_grid = dim3(1, 1, 1);
     threads_per_block = dim3(length, 1, 1);
@@ -63,6 +66,7 @@ bool AwkwardOffsetArrayCuda<T, C>::check_correctness(int64_t length, int64_t sta
 
   srand(time(0));
 
+  // Generate some rough data
   C max_limit = std::numeric_limits<C>::max();
   for (int64_t i = 0; i < length; i++) {
     C val_1 = rand() % max_limit;
