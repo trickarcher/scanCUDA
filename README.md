@@ -59,6 +59,7 @@ As evident, there's almost the GPU implementation is almost 3X faster than CPU a
 
 ### Linux
 * Install CMake(version >= 3.8)
+* `git submodule --init --recursive` to clone GoogleTests into ext/googletest
 * `mkdir build && cd build`
 * `cmake ..`
 * `make`
