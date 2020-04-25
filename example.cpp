@@ -3,7 +3,7 @@
 
 int main() {
   int64_t length;
-  length = 5;
+  length = 1000000;
   int64_t *tooffsets = new int64_t[length + 1];
   int32_t *fromstarts = new int32_t[length];
   int32_t *fromstops = new int32_t[length];
@@ -24,11 +24,11 @@ int main() {
   awkward::AwkwardOffsetArrayCuda<int64_t, int32_t> arr;
   arr.awkward_listarray_compact_offsets(&tooffsets, fromstarts, fromstops, startoffset, stopoffset, length);
 
-  for(auto i = 0; i <=length; i++)
-  {
-    std::cout << tooffsets[i] << " ";
-  }
-  std::cout << "\n";
+//  for(auto i = 0; i <=length; i++)
+//  {
+//    std::cout << tooffsets[i] << " ";
+//  }
+//  std::cout << "\n";
 }
 
 

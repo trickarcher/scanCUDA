@@ -14,20 +14,20 @@ add_executable(scan example.cpp)
 set_target_properties(scan PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(scan PRIVATE awkward_array_scan)
 
-################################
-# GTest
-################################
-ADD_SUBDIRECTORY(ext/googletest)
-enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-################################
-# Unit Tests
-################################
-# Add test cpp file
-add_executable(tests tests/tests.cpp tests/scan_test.cpp)
-# Link test executable against gtest & gtest_main
-target_link_libraries(tests gtest gtest_main awkward_array_scan)
-add_test(tests tests)
+#################################
+## GTest
+#################################
+#ADD_SUBDIRECTORY(ext/googletest)
+#enable_testing()
+#include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+#
+#################################
+## Unit Tests
+#################################
+## Add test cpp file
+#add_executable(tests tests/tests.cpp tests/scan_test.cpp)
+## Link test executable against gtest & gtest_main
+#target_link_libraries(tests gtest gtest_main awkward_array_scan)
+#add_test(tests tests)
 
 
