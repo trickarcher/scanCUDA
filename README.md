@@ -45,15 +45,17 @@ This allows us to skip the entire `__syncthreads()` stuff which leads to consist
 | 1000          | 0.019552 ms           |    0.005000 ms                            |
 | 10000          | 0.026176 ms           |    0.004000 ms                            |
 | 100000          | 0.037088 ms           |    0.040000 ms                            |
-| 1000000          | 0.058912 ms           |    0.339000 ms                            |
-| 10000000          | 0.748448 ms           |    2 ms                           |
-| 100000000          | 8.966336 ms           |    29 ms                        |
-| 1000000000          | 104.456573 ms           |    289 ms                        |
+| 1000000          | 1.02 ms           |    0.339000 ms                            |
+| 10000000          |  13 ms           |    29 ms                           |
+| 100000000          | 152.966336 ms           |    229 ms                        |
+
 ---
+![](images/1.png)
+![](images/2.png)
 
 (Note: The GPU Benchmarks exclude the time taken in transfer operations)
 
-As evident, there's almost the GPU implementation is almost 3X faster than CPU at larger array sizes
+As evident, there's almost the GPU implementation is almost 2X faster than CPU at larger array sizes
 ---
 
 ## Build Instructions
