@@ -49,8 +49,9 @@ This allows us to skip the entire `__syncthreads()` stuff which leads to consist
 | 10000000          | 0.748448 ms           |    2 ms                           |
 | 100000000          | 8.966336 ms           |    29 ms                        |
 | 1000000000          | 104.456573 ms           |    289 ms                        |
-(Note: The GPU Benchmarks exclude the time taken in transfer operations)
 ---
+
+(Note: The GPU Benchmarks exclude the time taken in transfer operations)
 
 As evident, there's almost the GPU implementation is almost 3X faster than CPU at larger array sizes
 ---
